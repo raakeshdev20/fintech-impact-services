@@ -1,6 +1,8 @@
 package com.bank.banking_dev_services.payments;
 
 import com.bank.banking_dev_services.payments.model.PaymentRequest;
+import com.bank.banking_dev_services.payments.model.PaymentResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,8 +16,16 @@ public class PaymentController {
     }
 
     @PostMapping("/submit")
-    public String submitPayment(@RequestBody PaymentRequest request) {
+    public ResponseEntity<PaymentResponse> submitPayment(@RequestBody PaymentRequest request) {
+        // Logic to process
         boolean success = paymentService.processPayment(request);
-        return success ? "Payment Successful" : "Payment Failed";
+
+        PaymentResponse response = new PaymentResponse(
+                success ? "SUCCESS" : "FAILED",
+                success ? "Payment Successful" : "Payment Failed",
+                "TXN-" + System.currentTimeMillis() // Generates a fake ID for testing
+        );
+
+        return ResponseEntity.ok(response);
     }
 }

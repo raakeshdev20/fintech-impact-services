@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentService {
     public boolean processPayment(PaymentRequest request) {
-        if (request.amount <= 0) {
+        if (request.getAmount() <= 0) {
             System.out.println("Payment Rejected: Invalid Amount");
             return false;
         }
         //test
-        System.out.println("Processing payment for: " + request.vendorName);
+        //Testing payments in local
+        System.out.println("Testing payment change in local");
+        System.out.println("Processing payment for: " + request.getVendorName());
         return true;
     }
 }

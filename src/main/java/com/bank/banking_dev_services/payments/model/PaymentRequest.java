@@ -1,7 +1,14 @@
 package com.bank.banking_dev_services.payments.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class PaymentRequest {
-    public String vendorName;
-    public double amount;
-    public String currency;
+    // Getters and Setters
+    private String vendorName;
+    private double amount;
+    private String currency;
+
 }

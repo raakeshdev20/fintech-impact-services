@@ -1,7 +1,12 @@
 package com.bank.banking_dev_services.transfer.model;
 
+import lombok.*;
+
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TransferRequest {
-    public String fromAccount;
-    public String toAccount;
-    public double amount;
+    private String fromAccount;
+    private String toAccount;
+    private double amount;
 }

@@ -1,4 +1,4 @@
-package com.bank.infrastructure.impact;
+package com.bank.banking_dev_services.infrastructure.impact;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -18,8 +18,7 @@ import java.util.Set;
 public class ImpactScanner {
 
     public Set<String> getImpactedTags(String targetBranch) throws Exception {
-        Set<String> tags = new HashSet<>();
-
+        // 1. Initialize the JGit Repository
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository repository = builder.setGitDir(new File("./.git"))
                 .readEnvironment()
@@ -27,27 +26,48 @@ public class ImpactScanner {
                 .build();
 
         try (Git git = new Git(repository)) {
-            // Fix: We now use the helper method to turn the branch name into a TreeIterator
             AbstractTreeIterator oldTreeParser = prepareTreeParser(repository, targetBranch);
 
-            // This compares the target branch to your current "Index" (staged changes)
+            // 2. Get the list of changed files
             List<DiffEntry> diffs = git.diff()
                     .setOldTree(oldTreeParser)
                     .call();
 
-            for (DiffEntry entry : diffs) {
-                String path = entry.getNewPath();
-                if (path.contains("payments")) tags.add("@payments");
-                if (path.contains("transfers")) tags.add("@transfers");
-                if (path.contains("transactions")) tags.add("@transactions");
+            // 3. Convert DiffEntries to a simple list of file paths (Strings)
+            List<String> changedFiles = diffs.stream()
+                    .map(DiffEntry::getNewPath)
+                    .toList();
+
+            // 4. Call  new calculation logic
+            return calculateTags(changedFiles);
+        }
+    }
+
+    public Set<String> calculateTags(List<String> changedFiles) {
+        Set<String> tags = new HashSet<>();
+
+              for (String file : changedFiles) {
+            // Note: Use lowercase to ensure matches are consistent
+            String lowerFile = file.toLowerCase();
+
+            if (lowerFile.contains("payments")) {
+                tags.add("@payments");
             }
+            if (lowerFile.contains("transfers")) {
+                tags.add("@transfers");
+            }
+            if (lowerFile.contains("transactions")) {
+                tags.add("@transactions");
+            }
+
+        }
+        if (tags.isEmpty() && !changedFiles.isEmpty()) {
+            tags.add("@smoke");
         }
 
-        if (tags.isEmpty()) tags.add("@smoke");
         return tags;
     }
 
-    // Helper method to convert a branch name into something JGit can iterate over
     private AbstractTreeIterator prepareTreeParser(Repository repository, String ref) throws Exception {
         try (ObjectReader reader = repository.newObjectReader()) {
             CanonicalTreeParser treeParser = new CanonicalTreeParser();

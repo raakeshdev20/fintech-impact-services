@@ -1,15 +1,14 @@
 package com.bank.banking_dev_services.transactions.model;
 
-public class TransactionResponse {
-    public String id;
-    public String status;
-    public double amount;
-    public String description;
+import lombok.*;
 
-    public TransactionResponse(String id, String status, double amount, String description) {
-        this.id = id;
-        this.status = status;
-        this.amount = amount;
-        this.description = description;
-    }
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class TransactionResponse {
+    private String id;
+    private String status;
+    private double amount;
+    private String description;
 }

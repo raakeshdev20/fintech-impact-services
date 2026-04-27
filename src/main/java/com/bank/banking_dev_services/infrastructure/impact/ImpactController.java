@@ -1,4 +1,4 @@
-package com.bank.infrastructure.impact;
+package com.bank.banking_dev_services.infrastructure.impact;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

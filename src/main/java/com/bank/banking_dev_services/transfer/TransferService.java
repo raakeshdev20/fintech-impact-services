@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public class TransferService {
     public boolean processTransfer(TransferRequest request) {
         // Logic: Verify funds between accounts
-        System.out.println("Processing transfer from " + request.fromAccount + " to " + request.toAccount);
+        System.out.println("Processing transfer from " + request.getFromAccount() + " to " + request.getToAccount());
         return true;
     }
 }
