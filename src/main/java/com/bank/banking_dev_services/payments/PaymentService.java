@@ -11,8 +11,6 @@ public class PaymentService {
             return false;
         }
         //test
-        //Testing payments in local
-        System.out.println("Testing payment change in local");
         System.out.println("Processing payment for: " + request.getVendorName());
         return true;
     }
