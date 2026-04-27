@@ -11,7 +11,7 @@ public class PaymentService {
             return false;
         }
         //test
-        System.out.println("Test12");
+        System.out.println("Test");
         System.out.println("Processing payment for: " + request.getVendorName());
         return true;
     }
