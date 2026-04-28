@@ -23,7 +23,7 @@ public class PaymentController {
         PaymentResponse response = new PaymentResponse(
                 success ? "SUCCESS" : "FAILED",
                 success ? "Payment Successful" : "Payment Failed",
-                "TXN-" + System.currentTimeMillis() // Generates a fake ID for testing
+                "TXN-" + System.currentTimeMillis()
         );
 
         return ResponseEntity.ok(response);
