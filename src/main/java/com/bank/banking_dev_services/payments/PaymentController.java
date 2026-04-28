@@ -23,7 +23,7 @@ public class PaymentController {
         PaymentResponse response = new PaymentResponse(
                 success ? "SUCCESS" : "FAILED",
                 success ? "Payment Successful" : "Payment Failed",
-                "TXN-" + System.currentTimeMillis() //Added logging
+                "TXN-" + System.currentTimeMillis()
         );
 
         return ResponseEntity.ok(response);
