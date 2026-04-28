@@ -18,27 +18,28 @@ import java.util.Set;
 public class ImpactScanner {
 
     public Set<String> getImpactedTags(String targetBranch) throws Exception {
-        // 1. Initialize the JGit Repository
+
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
-        Repository repository = builder.setGitDir(new File("./.git"))
-                .readEnvironment()
-                .findGitDir()
+        Repository repository = builder.readEnvironment()
+
+                .findGitDir(new File("."))
                 .build();
 
         try (Git git = new Git(repository)) {
+
             AbstractTreeIterator oldTreeParser = prepareTreeParser(repository, targetBranch);
 
-            // 2. Get the list of changed files
             List<DiffEntry> diffs = git.diff()
                     .setOldTree(oldTreeParser)
                     .call();
 
-            // 3. Convert DiffEntries to a simple list of file paths (Strings)
             List<String> changedFiles = diffs.stream()
                     .map(DiffEntry::getNewPath)
                     .toList();
 
-            // 4. Call  new calculation logic
+
+            System.out.println("JGit found changed files: " + changedFiles);
+
             return calculateTags(changedFiles);
         }
     }
@@ -46,21 +47,21 @@ public class ImpactScanner {
     public Set<String> calculateTags(List<String> changedFiles) {
         Set<String> tags = new HashSet<>();
 
-              for (String file : changedFiles) {
-            // Note: Use lowercase to ensure matches are consistent
+        for (String file : changedFiles) {
             String lowerFile = file.toLowerCase();
 
-            if (lowerFile.contains("payments")) {
+            if (lowerFile.contains("payment")) {
                 tags.add("@payments");
             }
-            if (lowerFile.contains("transfers")) {
+            if (lowerFile.contains("transfer")) {
                 tags.add("@transfers");
             }
-            if (lowerFile.contains("transactions")) {
+            if (lowerFile.contains("transaction")) {
                 tags.add("@transactions");
             }
-
         }
+
+        // Default to @smoke only if files were changed but no keywords matched
         if (tags.isEmpty() && !changedFiles.isEmpty()) {
             tags.add("@smoke");
         }
