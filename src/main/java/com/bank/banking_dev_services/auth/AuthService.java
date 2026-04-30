@@ -13,7 +13,7 @@ import java.util.UUID;
          */
         public boolean validateSession(String token) {
             // Simple mock logic: if the token is not null and long enough, it's "valid"
-            if (token == null || token.length() < 12) {
+            if (token == null || token.length() < 10) {
                 return false;
             }
 
