@@ -16,6 +16,11 @@ public class TransferController {
         this.transferService = transferService;
     }
 
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("Transfer Service is UP");
+    }
+
     @PostMapping("/execute")
     public ResponseEntity<TransferResponse> execute(@RequestBody TransferRequest request) {
         // 1. Process the transfer

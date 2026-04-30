@@ -15,6 +15,11 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
+    @GetMapping("/status")
+    public ResponseEntity<String> getStatus() {
+        return ResponseEntity.ok("Payment Service is UP");
+    }
+
     @PostMapping("/submit")
     public ResponseEntity<PaymentResponse> submitPayment(@RequestBody PaymentRequest request) {
         // Logic to process

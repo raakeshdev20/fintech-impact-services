@@ -48,21 +48,32 @@ public class ImpactScanner {
         Set<String> tags = new HashSet<>();
 
         for (String file : changedFiles) {
-            String lowerFile = file.toLowerCase();
+            // Standardize the path for cross-platform (Windows vs Linux) consistency
+            String path = file.replace("\\", "/").toLowerCase();
 
-            if (lowerFile.contains("payment")) {
+            // If it's the build config OR in the auth/security package, run EVERYTHING.
+            if (path.endsWith("pom.xml") || path.contains("/auth/") ) {
+                System.out.println("CRITICAL: Global or Security impact [" + path + "]. Escalating to @regression.");
+                return Set.of("@regression");
+            }
+
+            // 2. DOMAIN-SPECIFIC MAPPING (Path-Based)
+            // We look for the folder name in the package structure.
+            if (path.contains("/payments/")) {
                 tags.add("@payments");
             }
-            if (lowerFile.contains("transfer")) {
+            if (path.contains("/transfer/")) {
                 tags.add("@transfers");
             }
-            if (lowerFile.contains("transaction")) {
+            if (path.contains("/transactions/")) {
                 tags.add("@transactions");
             }
         }
 
-        // Default to @smoke only if files were changed but no keywords matched
+        // 3. FALLBACK (The "Lean" Logic)
+        // If files changed but none were in our code packages (like README or .gitignore)
         if (tags.isEmpty() && !changedFiles.isEmpty()) {
+            System.out.println("Non-functional change detected. Falling back to @smoke.");
             tags.add("@smoke");
         }
 

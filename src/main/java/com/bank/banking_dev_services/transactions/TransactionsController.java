@@ -14,6 +14,11 @@ public class TransactionsController {
         this.transactionService = transactionService;
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<String> getHealth() {
+        return ResponseEntity.ok("Transaction Service is UP");
+    }
+
     @GetMapping("/history")
     public ResponseEntity<List<TransactionResponse>> getHistory() {
         List<TransactionResponse> history = transactionService.getRecentTransactions();
