@@ -30,7 +30,7 @@ public class TransferController {
         TransferResponse response = new TransferResponse();
         response.setStatus(success ? "SUCCESS" : "FAILED");
         response.setMessage(success ? "Transfer Successful" : "Transfer Failed");
-        response.setReferenceId("REF-" + System.currentTimeMillis()); //logging
+        response.setReferenceId("REF-" + System.currentTimeMillis());
 
         // 3. Return as a proper ResponseEntity (JSON)
         return ResponseEntity.ok(response);
