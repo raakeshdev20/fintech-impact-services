@@ -43,14 +43,16 @@ The service compares branches using JGit:
 
 Files are mapped to test execution tags.
 
-📊 Mapping Rules
-Change Type	Test Tag
-/payments/	@payments
-/transactions/	@transactions
-/transfer/	@transfers
-/auth/	@regression
-pom.xml	@regression
-No match	@smoke
+## 📊 Mapping Rules
+
+| Change Type      | Test Tag        |
+|------------------|-----------------|
+| /payments/       | @payments       |
+| /transactions/   | @transactions   |
+| /transfer/       | @transfers      |
+| /auth/           | @regression     |
+| pom.xml          | @regression     |
+| No match         | @smoke          |
 
 ### 3. API Exposure
 
