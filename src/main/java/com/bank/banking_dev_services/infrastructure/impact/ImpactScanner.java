@@ -21,69 +21,86 @@ public class ImpactScanner {
 
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository repository = builder.readEnvironment()
-
                 .findGitDir(new File("."))
                 .build();
-
         try (Git git = new Git(repository)) {
-
             AbstractTreeIterator oldTreeParser = prepareTreeParser(repository, targetBranch);
-
             List<DiffEntry> diffs = git.diff()
                     .setOldTree(oldTreeParser)
                     .call();
+            Set<String> tags = calculateTags(diffs);
 
-            List<String> changedFiles = diffs.stream()
-                    .map(DiffEntry::getNewPath)
-                    .toList();
+            if (tags.isEmpty()) {
+                System.out.println("DECISION: No impactful changes detected → fallback @smoke");
+                return Set.of("@smoke");
+            }
 
-
-            System.out.println("JGit found changed files: " + changedFiles);
-
-            return calculateTags(changedFiles);
+            System.out.println("FINAL DECISION: impacted tags = " + tags);
+            return tags;
         }
     }
 
-    public Set<String> calculateTags(List<String> changedFiles) {
+    public Set<String> calculateTags(List<DiffEntry> diffs) {
+
         Set<String> tags = new HashSet<>();
 
-        for (String file : changedFiles) {
-            // Standardize the path for cross-platform (Windows vs Linux) consistency
-            String path = file.replace("\\", "/").toLowerCase();
+        System.out.println("=== IMPACT ANALYSIS START ===");
 
-            // If it's the build config OR in the auth/security package, run EVERYTHING.
-            if (path.endsWith("pom.xml") || path.contains("/auth/") ) {
-                System.out.println("CRITICAL: Global or Security impact [" + path + "]. Escalating to @regression.");
+        for (DiffEntry entry : diffs) {
+
+            String newPath = entry.getNewPath() != null ? entry.getNewPath().toLowerCase() : "";
+            String oldPath = entry.getOldPath() != null ? entry.getOldPath().toLowerCase() : "";
+
+            System.out.println("Evaluating change:");
+            System.out.println("OLD PATH: " + oldPath);
+            System.out.println("NEW PATH: " + newPath);
+            System.out.println("CHANGE TYPE: " + entry.getChangeType());
+
+            // =========================
+            // CRITICAL / GLOBAL RULE
+            // =========================
+            if (newPath.contains("/auth/")
+                    || oldPath.contains("/auth/")
+                    || newPath.endsWith("pom.xml")) {
+
+                System.out.println(
+                        "DECISION: Critical security or global impact detected → @regression"
+                );
+
+                System.out.println("=== IMPACT ANALYSIS END (EARLY EXIT) ===");
                 return Set.of("@regression");
             }
 
-            // 2. DOMAIN-SPECIFIC MAPPING (Path-Based)
-            // We look for the folder name in the package structure.
-            if (path.contains("/payments/")) {
+            // =========================
+            // DOMAIN RULES
+            // =========================
+            if (newPath.contains("/payments/") || oldPath.contains("/payments/")) {
+                System.out.println("DECISION: Payments module impacted → @payments");
                 tags.add("@payments");
             }
-            if (path.contains("/transfer/")) {
+
+            if (newPath.contains("/transfer/") || oldPath.contains("/transfer/")) {
+                System.out.println("DECISION: Transfer module impacted → @transfers");
                 tags.add("@transfers");
             }
-            if (path.contains("/transactions/")) {
+
+            if (newPath.contains("/transactions/") || oldPath.contains("/transactions/")) {
+                System.out.println("DECISION: Transactions module impacted → @transactions");
                 tags.add("@transactions");
             }
         }
 
-        // 3. FALLBACK (The "Lean" Logic)
-        // If files changed but none were in our code packages (like README or .gitignore)
-        if (tags.isEmpty() && !changedFiles.isEmpty()) {
-            System.out.println("Non-functional change detected. Falling back to @smoke.");
-            tags.add("@smoke");
-        }
-
+        System.out.println("=== IMPACT ANALYSIS END ===");
         return tags;
     }
 
     private AbstractTreeIterator prepareTreeParser(Repository repository, String ref) throws Exception {
+
         try (ObjectReader reader = repository.newObjectReader()) {
+
             CanonicalTreeParser treeParser = new CanonicalTreeParser();
             treeParser.reset(reader, repository.resolve(ref + "^{tree}"));
+
             return treeParser;
         }
     }
