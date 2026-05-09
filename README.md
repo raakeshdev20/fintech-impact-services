@@ -139,7 +139,7 @@ http://localhost:8080/api/dev-ops/test-selector?targetBranch=main~1
 
 - Git diff–based analysis engine
 - Rule-based tag mapping
-- CI/CD integration ready
+- Designed for GitHub Actions–based CI integration
 
 ## 📌 Why This Matters
 
