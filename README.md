@@ -1,18 +1,34 @@
+![Status](https://img.shields.io/badge/status-proof--of--concept-orange)
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/SpringBoot-3.x-brightgreen)
+![JGit](https://img.shields.io/badge/JGit-Git%20Diff%20Analysis-blue)
+
 ### 🚀 Fintech Impact Services (Dev Repository)
+
+Spring Boot–based impact analysis service for intelligent CI test selection using Git diff analysis and JGit.
+
+This repository acts as the orchestration and impact-analysis engine for a cross-repository selective testing framework.
+
 ### 📌 Overview
 
 This repository contains the Fintech Spring Boot microservice that exposes an API for impact-based test selection.
 
 It is part of a cross-repository CI/CD intelligence system where code changes are analyzed to determine impacted test suites dynamically.
 
-### 🧠 Purpose
+### 📌 Project Status
 
-This service is responsible for:
+This repository is a proof-of-concept (PoC) demonstrating
+deterministic impact-aware CI execution using Git diff analysis.
 
-- Detecting changed files using Git diff (JGit)
-- Mapping changes to test execution tags
-- Exposing an API for CI pipelines to fetch impacted tests
-- Enabling selective test execution instead of full regression
+The implementation was validated in controlled scenarios
+to dynamically map code changes to impacted Karate test suites.
+
+### ⚙️ Core Responsibilities
+
+- Detect changed files using JGit diff analysis
+- Map source code changes to Karate test tags
+- Expose impact-analysis APIs for CI pipelines
+- Enable selective test execution instead of full regression runs
   
 ### 🏗 Architecture Role
 
@@ -113,16 +129,23 @@ http://localhost:8080/api/dev-ops/test-selector?targetBranch=main~1
 
 ## 📊 Key Benefits
 
-- 🔁 Enables impact-based test selection
-- ⏱ Reduces CI execution time
-- 💰 Reduces regression cost
-- 🧠 Supports intelligent test targeting in microservices
+- 🔁 Enables deterministic impact-based test selection
+- ⏱ Demonstrated CI runtime reduction in controlled scenarios
+- 💰 Reduces unnecessary regression execution
+- 🧠 Supports targeted test execution in microservice environments
+- 🔗 Integrates with GitHub Actions–based CI workflows
 
 ## 🧠 Design Highlights
 
 - Git diff–based analysis engine
 - Rule-based tag mapping
 - CI/CD integration ready
+
+## 📌 Why This Matters
+
+In microservice architectures, running full regression suites for every change creates CI bottlenecks and unnecessary compute overhead.
+
+This project demonstrates a lightweight deterministic approach to impact-aware CI execution without requiring external dependency graph tooling or SaaS platforms.
 
 ##  ⚠️ Known Limitations
 
